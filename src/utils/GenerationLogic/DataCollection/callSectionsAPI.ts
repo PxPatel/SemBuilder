@@ -38,7 +38,9 @@ export const callSectionsAPI = async (
       throw error;
     } else {
       // Re-throw as a FetchError with additional context if it's a different type of error
-      throw new FetchError("An unexpected error occurred invoking fetch");
+      throw new FetchError(
+        `An unexpected error occurred invoking fetch on endpoint: ${serverBaseUrl + serverSectionsEndpoint}`,
+      );
     }
   }
 };
