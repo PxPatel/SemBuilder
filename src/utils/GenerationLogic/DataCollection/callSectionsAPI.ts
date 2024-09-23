@@ -6,7 +6,7 @@ export const callSectionsAPI = async (
 ): Promise<SectionAPIResponse> => {
   const isBrowser = typeof window !== "undefined"; // Check if running on client
   const serverBaseUrl = isBrowser
-    ? window.location.origin // Use the current domain dynamically
+    ? window.location.origin + "/" // Use the current domain dynamically
     : (process.env.NEXT_PUBLIC_SERVER_URL ?? ""); // Fallback for SSR
 
   const serverSectionsEndpoint =
