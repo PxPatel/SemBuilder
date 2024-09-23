@@ -4,7 +4,10 @@ import { QUERY_PARAMETERS, SectionAPIResponse } from "../../../types/api.types";
 export const callSectionsAPI = async (
   queryParameters: QUERY_PARAMETERS,
 ): Promise<SectionAPIResponse> => {
-  const serverBaseUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? "";
+  const isBrowser = typeof window !== "undefined"; // Check if running on client
+  const serverBaseUrl = isBrowser
+    ? window.location.origin // Use the current domain dynamically
+    : (process.env.NEXT_PUBLIC_SERVER_URL ?? ""); // Fallback for SSR
 
   const serverSectionsEndpoint =
     process.env.NEXT_PUBLIC_SERVER_SECTIONS_ENDPOINT ?? "";
