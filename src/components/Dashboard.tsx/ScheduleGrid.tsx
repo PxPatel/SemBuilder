@@ -6,7 +6,7 @@ import ScheduleBlock from "../ScheduleBlock.tsx/ScheduleBlock";
 
 const scheduleBlockSettings = {
   startHour: 8,
-  endHour: 21,
+  endHour: 24,
   lineInterval: 1,
   labelInterval: 2,
   showLabels: true,
