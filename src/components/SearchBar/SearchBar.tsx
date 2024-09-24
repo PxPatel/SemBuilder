@@ -70,7 +70,6 @@ const SearchBar = () => {
 
   useEffect(() => {
     getSectionsData(selectedCourses);
-    console.log("In Search Bar useEffect");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCourses, getSectionsData]);
 

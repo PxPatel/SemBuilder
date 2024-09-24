@@ -1,9 +1,9 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "./button";
+import { Button } from "../shadcn-ui/button";
 import { ISchedulerContextType, useScheduler } from "../../hooks/use-scheduler";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface PaginationButtonsProps {
   currentPage: number;
@@ -16,9 +16,9 @@ export function PaginationButtons() {
   const { sectionsData, LPDMap, navPage, setNavPage } =
     useScheduler() as ISchedulerContextType;
 
-  useEffect(() => {
-    console.log("LPDMap:", LPDMap, "navPage:", navPage);
-  });
+  // useEffect(() => {
+  //   console.log("LPDMap:", LPDMap, "navPage:", navPage);
+  // });
 
   if (Object.keys(sectionsData).length === 0) {
     return null;

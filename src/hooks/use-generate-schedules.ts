@@ -34,8 +34,8 @@ const useGenerateSchedules = (): GenerateSchedulesHook => {
       callback?: () => void,
     ): [ReportSchedules, LastPointDetails] | null => {
       try {
-        console.log("Current LDPMap", JSON.parse(JSON.stringify(LPDMap)));
-        console.log("Current setting", JSON.parse(JSON.stringify(settings)));
+        console.log("[Generation Starting]");
+        console.log("Provided settings", settings);
 
         const response = generateFilteredSchedules(
           JSON.parse(JSON.stringify(settings)),
@@ -59,6 +59,7 @@ const useGenerateSchedules = (): GenerateSchedulesHook => {
 
         callback ? callback() : undefined;
 
+        console.log("[Generation Ending]");
         return response;
       } catch (error: unknown) {
         console.log("Caught an Error during generation", error);
@@ -68,6 +69,7 @@ const useGenerateSchedules = (): GenerateSchedulesHook => {
           // Handle non-Error types if necessary
           setError(new Error("An unknown error occurred"));
         }
+        console.log("[Generation Ending]");
         return null;
       }
     },

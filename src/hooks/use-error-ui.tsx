@@ -29,28 +29,59 @@ export function ErrorUIProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
   const { toast, dismiss } = useToast();
   const toastId = useRef<string>("");
+  const timerId = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    if (!error && toastId.current) {
-      // dismiss(toastId.current);
-      // toastId.current = "";
-      return;
-    }
-
     if (!error) {
       return;
     }
 
-    const { id } = toast({
+    console.log("[Toasting error]");
+    const { id, dismiss: specificDismiss } = toast({
       variant: "destructive",
       title: `Error: ${error.name}`,
       description: error.message,
-      action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+      action: (
+        <ToastAction
+          altText="Dismiss"
+          onClick={() => {
+            specificDismiss();
+            setError(null);
+            toastId.current = id;
+          }}
+        >
+          Dismiss
+        </ToastAction>
+      ),
       duration: 5000,
     });
-    // toastId.current = id;
+    toastId.current = id;
+
+    return () => {
+      // Clean up when the component is unmounted
+      if (toastId.current) {
+        dismiss(toastId.current);
+      }
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
+
+  useEffect(() => {
+    if (error && toastId.current) {
+      timerId.current = setTimeout(() => {
+        if (toastId.current) {
+          console.log("[Setting error to null in setTimeout]");
+          setError(null);
+          toastId.current = "";
+        }
+      }, 5 * 1000);
+    }
+
+    return () => {
+      clearTimeout(timerId.current);
+    };
+  });
 
   const value: IErrorUIContextType = {
     error,
