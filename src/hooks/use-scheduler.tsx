@@ -75,40 +75,6 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
     setCourseColors(newColorMap);
   }, []);
 
-  const getSectionsData = useCallback(
-    async (selectedCourses: string[]) => {
-      console.log("[Data Fetch Starting]");
-      if (selectedCourses.length > 0) {
-        try {
-          const sectionsData = await collectSectionsData(
-            selectedCourses,
-            SEMESTER,
-          );
-          setSectionsData(sectionsData);
-          setNewColorMap(selectedCourses);
-          updateGenerationOptions({
-            relevantCoursesData: sectionsData,
-          });
-        } catch (error) {
-          console.error(error);
-          if (error instanceof Error) {
-            console.log("Caught error in getSectionsData");
-            setError(error);
-          }
-        }
-      } else {
-        setSectionsData({});
-        updateGenerationOptions({
-          relevantCoursesData: {},
-        });
-      }
-
-      console.log("[Data Fetch Ending]");
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [setNewColorMap],
-  );
-
   const updateGenerationOptions = useCallback(
     (newOptions: Partial<ScheduleGenerationOptions>, callback?: () => any) => {
       console.log("[updateGenerationOptions Starting]");
@@ -124,6 +90,78 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
+  );
+
+  const getSectionsData = useCallback(
+    async (selectedCourses: string[]) => {
+      console.log("[Data Fetch Starting]");
+      if (selectedCourses.length > 0) {
+        // Convert knownCourses to a Set for O(1) lookups
+        const knownCoursesSet = new Set(
+          Object.keys(SGO.current.relevantCoursesData ?? {}),
+        );
+        console.log("knownCoursesSet", knownCoursesSet);
+
+        // Filter out the courses that we don't already have data for
+        const newCoursesToFetch = selectedCourses.filter(
+          (course) => !knownCoursesSet.has(course),
+        );
+
+        console.log("newCoursesToFetch", newCoursesToFetch);
+
+        // Remove any sections that are no longer selected
+        const updatedSectionsData = {
+          ...(SGO.current.relevantCoursesData ?? {}),
+        };
+        const selectedCoursesSet = new Set(selectedCourses);
+
+        console.log("selectedCoursesSet", selectedCoursesSet);
+        Object.keys(SGO.current.relevantCoursesData ?? {}).forEach(
+          (section) => {
+            if (!selectedCoursesSet.has(section)) {
+              delete updatedSectionsData[section];
+            }
+          },
+        );
+
+        console.log("updatedSectionsData", Object.keys(updatedSectionsData));
+
+        try {
+          const collectedSectionsData = await collectSectionsData(
+            newCoursesToFetch,
+            SEMESTER,
+          );
+
+          setSectionsData({
+            ...updatedSectionsData,
+            ...collectedSectionsData,
+          });
+          setNewColorMap(selectedCourses);
+          updateGenerationOptions({
+            relevantCoursesData: {
+              ...updatedSectionsData,
+              ...collectedSectionsData,
+            },
+          });
+        } catch (error) {
+          console.error(error);
+          if (error instanceof Error) {
+            console.log("Caught error in getSectionsData");
+            setError(error);
+          }
+        }
+      } else {
+        console.log("No selected courses");
+        setSectionsData({});
+        updateGenerationOptions({
+          relevantCoursesData: {},
+        });
+      }
+
+      console.log("[Data Fetch Ending]");
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [setNewColorMap, updateGenerationOptions],
   );
 
   const buildSchedules = useCallback(
