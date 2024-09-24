@@ -1,18 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 import FilterForm from "./FilterForm";
 import ScheduleGrid from "./ScheduleGrid";
-import { PaginationButtons } from "../shadcn-ui/pagination-buttons";
+import { PaginationButtons } from "./PaginationButtons";
 
 const Dashboard = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(true);
-
-  // useEffect(() => {
-  //   console.log(LPDMap);
-  // });
 
   const toggleFilterVisibility = () => {
     setIsFilterVisible(!isFilterVisible);
