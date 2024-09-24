@@ -364,13 +364,7 @@ function doesScheduleHaveConflict(
         }
       }
 
-      //If the start or end time of the selectedSection is inbetween
-      //the times of the traversing section
-      //return true to report the conflict
-      if (
-        isTimeInBetweenInterval(startTimeInQ, startTimeOfOne, endTimeOfOne) ||
-        isTimeInBetweenInterval(endTimeInQ, startTimeOfOne, endTimeOfOne)
-      ) {
+      if (hasConflict(startTimeInQ, endTimeInQ, startTimeOfOne, endTimeOfOne)) {
         return true;
       }
     }
@@ -404,6 +398,26 @@ function isTimeInBetweenInterval(
   }
 
   return x >= earlierBound && x <= laterBound;
+}
+
+function hasConflict(
+  startTimeInQ: number,
+  endTimeInQ: number,
+  startTimeOfPlaced: number,
+  endTimeOfPlaced: number,
+) {
+  // Condition 1: Section in Q starts after section already placed ends
+  if (startTimeInQ >= endTimeOfPlaced) {
+    return false; // No conflict
+  }
+
+  // Condition 2: Section in Q ends before section already placed starts
+  if (endTimeInQ <= startTimeOfPlaced) {
+    return false; // No conflict
+  }
+
+  // Otherwise, the sections overlap
+  return true;
 }
 
 export function deepCloneObject<T>(obj: T): DeepClone<T> {
