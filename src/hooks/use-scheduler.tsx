@@ -18,16 +18,13 @@ import {
   BoxPalettes,
 } from "../lib/default/default";
 import { CompiledCoursesData } from "../types/data.types";
-import {
-  PAGINATION_STATE,
-  ScheduleGenerationOptions,
-} from "../types/options.types";
+import { ScheduleGenerationOptions } from "../types/options.types";
 import { LastPointDetails, ReportSchedules } from "../types/schedule.types";
 import { useErrorUI } from "./use-error-ui";
 import DataError from "../lib/error/DataError";
 
 export type ISchedulerContextType = {
-  sectionsData: CompiledCoursesData;
+  // sectionsData: CompiledCoursesData;
   scheduleGenerationOptions: React.MutableRefObject<ScheduleGenerationOptions>;
   generatedSchedule: ReportSchedules | null;
   updateGenerationOptions: (
@@ -48,7 +45,7 @@ export const SchedulerContext = createContext<ISchedulerContextType | null>(
 export const useScheduler = () => useContext(SchedulerContext);
 
 export function SchedulerProvider({ children }: { children: ReactNode }) {
-  const [sectionsData, setSectionsData] = useState<CompiledCoursesData>({});
+  // const [sectionsData, setSectionsData] = useState<CompiledCoursesData>({});
   const SGO = useRef<ScheduleGenerationOptions>(
     DEFAULT_SCHEDULE_GENERATION_OPTIONS,
   );
@@ -132,10 +129,10 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
             SEMESTER,
           );
 
-          setSectionsData({
-            ...updatedSectionsData,
-            ...collectedSectionsData,
-          });
+          // setSectionsData({
+          //   ...updatedSectionsData,
+          //   ...collectedSectionsData,
+          // });
           setNewColorMap(selectedCourses);
           updateGenerationOptions({
             relevantCoursesData: {
@@ -152,7 +149,7 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
         }
       } else {
         console.log("No selected courses");
-        setSectionsData({});
+        // setSectionsData({});
         updateGenerationOptions({
           relevantCoursesData: {},
         });
@@ -167,7 +164,7 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
   const buildSchedules = useCallback(
     ({ overrideNewBuild = false }: { overrideNewBuild?: boolean } = {}) => {
       console.log("[BuildSchedules Starting]");
-      if (Object.keys(sectionsData).length === 0) {
+      if (Object.keys(SGO.current.relevantCoursesData ?? {}).length === 0) {
         haveAnyOptionsChanged.current = true;
         setGeneratedSchedule([]);
         return;
@@ -189,7 +186,8 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
       console.log("[BuildSchedules Ending]");
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sectionsData],
+    [autoBuildTrigger],
+    //[sectionsData]
   );
 
   useEffect(() => {
@@ -214,7 +212,7 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
 
   //Reacting to option changes by auto building
   useEffect(() => {
-    if (autoBuildTrigger && sectionsData) {
+    if (autoBuildTrigger) {
       console.log("[Handling auto building]: Valid triggers");
       if (error instanceof DataError) {
         console.log("Ending early cause of error");
@@ -237,7 +235,7 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
   }, [autoBuildTrigger]);
 
   const value: ISchedulerContextType = {
-    sectionsData,
+    // sectionsData,
     getSectionsData,
     scheduleGenerationOptions: SGO,
     generatedSchedule,

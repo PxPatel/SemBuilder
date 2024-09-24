@@ -14,11 +14,15 @@ const scheduleBlockSettings = {
 };
 
 export default function ScheduleGrid() {
-  const { generatedSchedule, sectionsData, courseColors } =
+  const { generatedSchedule, scheduleGenerationOptions, courseColors } =
     useScheduler() as ISchedulerContextType;
 
   const StripSchedule = useCallback(
     (scheduleData: string[], data: CompiledCoursesData) => {
+      // if (data === null) {
+      //   return {};
+      // }
+
       const TimeRepresentedSchedules: ScheduleClassTimeType = {};
 
       scheduleData.forEach((sectionIdentity) => {
@@ -44,7 +48,10 @@ export default function ScheduleGrid() {
       return (
         <ScheduleBlock
           key={index}
-          schedule={StripSchedule(schedule, sectionsData)}
+          schedule={StripSchedule(
+            schedule,
+            scheduleGenerationOptions.current.relevantCoursesData ?? {},
+          )}
           settings={scheduleBlockSettings}
           colorTheme={courseColors}
           className="h-44 w-64 border-2 border-slate-500 bg-gray-200 font-normal shadow-md hover:-top-1 hover:border-[3px] hover:border-pink-500 hover:drop-shadow-xl"

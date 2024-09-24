@@ -20,6 +20,10 @@ export default function ScheduleBlock({
   colorTheme: { [courseTitle: string]: string };
   className?: string;
 }) {
+  // if (Object.keys(schedule).length === 0) {
+  //   return null;
+  // }
+
   const dayToColumn: Record<Day, number> = {
     M: 0,
     T: 1,

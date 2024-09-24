@@ -13,14 +13,17 @@ interface PaginationButtonsProps {
 }
 
 export function PaginationButtons() {
-  const { sectionsData, LPDMap, navPage, setNavPage } =
+  const { scheduleGenerationOptions, LPDMap, navPage, setNavPage } =
     useScheduler() as ISchedulerContextType;
 
   // useEffect(() => {
   //   console.log("LPDMap:", LPDMap, "navPage:", navPage);
   // });
 
-  if (Object.keys(sectionsData).length === 0) {
+  if (
+    Object.keys(scheduleGenerationOptions.current.relevantCoursesData ?? {})
+      .length === 0
+  ) {
     return null;
   }
 
