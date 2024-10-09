@@ -20,7 +20,7 @@ export function generateFilteredSchedules({
     return [[], null];
   }
 
-  filterSectionsByNumber(relevantCoursesData, sectionFilters, customOptions);
+  // filterSectionsByNumber(relevantCoursesData, sectionFilters, customOptions);
   filterSectionByDays(relevantCoursesData, unwantedDays);
   filterSectionByTime(relevantCoursesData, timeFilters);
 

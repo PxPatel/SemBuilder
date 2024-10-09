@@ -15,15 +15,12 @@ const FilterForm = () => {
 
   // State to track selected days
   const [selectedDays, setSelectedDays] = useState<Day[]>([]);
-
   // Days of the week
   const days: Day[] = ["M", "T", "W", "R", "F", "S"]; // Represents "Monday" to "Saturday"
-
   // Effect to update the generation options whenever selectedDays changes
   useEffect(() => {
     updateGenerationOptions({ unwantedDays: selectedDays });
   }, [selectedDays, updateGenerationOptions]);
-
   // Handle checkbox change
   const handleCheckboxChange = (day: Day, isChecked: boolean) => {
     setSelectedDays((prev) =>
@@ -32,12 +29,12 @@ const FilterForm = () => {
   };
 
   const [beforeTime, setBeforeTime] = useState({
-    time: "12:00",
+    time: "8:00",
     isPM: false,
     noTimePreference: true,
   });
   const [afterTime, setAfterTime] = useState({
-    time: "12:00",
+    time: "24:00",
     isPM: false,
     noTimePreference: true,
   });
@@ -49,6 +46,20 @@ const FilterForm = () => {
       noTimePreference: boolean;
     }>
   >;
+
+  useEffect(() => {
+    // console.log("Something")
+    updateGenerationOptions({
+      timeFilters: {
+        before: beforeTime.noTimePreference
+          ? null
+          : `${beforeTime.time} ${beforeTime.isPM ? "PM" : "AM"}`,
+        after: afterTime.noTimePreference
+          ? null
+          : `${afterTime.time} ${afterTime.isPM ? "PM" : "AM"}`,
+      },
+    });
+  }, [beforeTime, afterTime, updateGenerationOptions]);
 
   const handleTimeChange =
     (setter: TimeObjectSetterType) =>
@@ -179,7 +190,7 @@ const FilterForm = () => {
     <>
       <form className="mx-auto w-64 max-w-md space-y-6">
         <div className="flex flex-col justify-center space-y-4">
-          <h2 className="text-lg font-semibold">Select Days</h2>
+          <h2 className="text-lg font-semibold">Unwanted Days</h2>
           <div className="grid grid-cols-2 gap-4">
             {days.map((day) => (
               <div key={day} className="flex items-center space-x-2">

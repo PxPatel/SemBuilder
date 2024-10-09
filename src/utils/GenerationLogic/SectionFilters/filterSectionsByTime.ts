@@ -3,7 +3,7 @@ import { TimeOptions } from "../../../types/options.types";
 
 export function filterSectionByTime(
   courseSectionData: CompiledCoursesData | null,
-  timeFilters: TimeOptions | null
+  timeFilters: TimeOptions | null,
 ): CompiledCoursesData | null {
   if (courseSectionData === null) {
     return null;
@@ -40,7 +40,7 @@ export function filterSectionByTime(
           : null;
 
   const lateCap =
-    before === null
+    after === null
       ? null
       : typeof after === "number"
         ? after
@@ -48,6 +48,7 @@ export function filterSectionByTime(
           ? convertStringTimeToNumber(after)
           : null;
 
+  console.log("RAW:", before, after);
   console.log("TIMES:", earlyCap, lateCap);
 
   if (earlyCap !== null && lateCap !== null && earlyCap >= lateCap) {
@@ -92,6 +93,7 @@ export function filterSectionByTime(
   return courseSectionData;
 }
 
+//FIXME: Check if time conversion is proper and if input is able to pipe through
 function convertStringTimeToNumber(timeStr: string): number | null {
   try {
     if (typeof timeStr !== "string" || timeStr === "" || timeStr === "TBA") {

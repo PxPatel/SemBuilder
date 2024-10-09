@@ -76,6 +76,7 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
     (newOptions: Partial<ScheduleGenerationOptions>, callback?: () => any) => {
       console.log("[updateGenerationOptions Starting]");
       SGO.current = { ...SGO.current, ...newOptions };
+      console.log("New SGO:", SGO.current);
 
       haveAnyOptionsChanged.current = true;
       setBuildTrigger(true);
