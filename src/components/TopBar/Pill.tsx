@@ -6,12 +6,17 @@ type PillProps = {
   color: string;
 };
 
-const Pill: React.FC<PillProps> = ({ course, onRemove, color }) => {
+const Pill = ({ course, onRemove, color }: PillProps) => {
   return (
     <div
-      className={`border border-stone-400 bg-slate-100 text-black shadow-md`}
+      className={`border border-stone-400 bg-stone-900 text-black shadow-md`}
       style={{
-        ...styles.pill,
+        display: "inline-flex",
+        alignItems: "center",
+        borderRadius: "15px",
+        padding: "5px 10px",
+        margin: "5px",
+        fontSize: "14px",
         backgroundColor: color.length > 0 ? color : "",
       }}
     >
@@ -24,18 +29,6 @@ const Pill: React.FC<PillProps> = ({ course, onRemove, color }) => {
       </span>
     </div>
   );
-};
-
-// Inline styles for pill component
-const styles = {
-  pill: {
-    display: "inline-flex",
-    alignItems: "center",
-    borderRadius: "15px",
-    padding: "5px 10px",
-    margin: "5px",
-    fontSize: "14px",
-  },
 };
 
 export default Pill;

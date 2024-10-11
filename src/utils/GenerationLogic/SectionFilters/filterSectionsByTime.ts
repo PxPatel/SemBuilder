@@ -100,12 +100,35 @@ function convertStringTimeToNumber(timeStr: string): number | null {
       return null;
     }
 
-    // Parse time
     const [time, meridiem] = timeStr.split(" ");
+    if (!time || !meridiem) {
+      throw new Error("Invalid time format");
+    }
+
     let hours = parseInt(time.split(":")[0]);
     const minutes = parseInt(time.split(":")[1]);
+
+    // Validate hour range (1-12)
+    if (isNaN(hours) || hours < 1 || hours > 12) {
+      throw new Error("Invalid hour: should be between 1 and 12");
+    }
+
+    // Validate minutes range (0-59)
+    if (isNaN(minutes) || minutes < 0 || minutes > 59) {
+      throw new Error("Invalid minutes: should be between 0 and 59");
+    }
+
     const period = meridiem.toUpperCase();
-    hours = period === "PM" && hours !== 12 ? hours + 12 : hours;
+    if (period !== "AM" && period !== "PM") {
+      throw new Error("Invalid meridiem: should be AM or PM");
+    }
+
+    // Convert to military time
+    if (period === "PM" && hours !== 12) {
+      hours += 12;
+    } else if (period === "AM" && hours === 12) {
+      hours = 0; // Midnight case
+    }
 
     // Calculate milliseconds from midnight
     const startMilliseconds = (hours * 60 + minutes) * 60 * 1000;

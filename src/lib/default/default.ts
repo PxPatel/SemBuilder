@@ -8,15 +8,15 @@ import { LastPointDetails } from "../../types/schedule.types";
 export const SEMESTER = "Fall_2024";
 
 export const BoxPalettes = [
-  "#758173",
-  "#D7CF07",
+  "#978365",
+  "#BDEE63",
   "#1B998B",
-  "#2E0014",
-  "#E70E02",
-  "#442220",
-  "#809848",
-  "#758173",
-  "#2E294E",
+  "#B658C4",
+  "#D6409F",
+  "#5B5BD6",
+  "#7CE2FE",
+  "#F76B15",
+  "#6E6E6E",
 ];
 
 export const DEFAULT_SCHEDULE_GENERATION_OPTIONS: ScheduleGenerationOptions = {

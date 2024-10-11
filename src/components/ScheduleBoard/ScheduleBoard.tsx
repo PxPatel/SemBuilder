@@ -1,27 +1,28 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
+import { PaginationButtons } from "./PaginationButtons";
 import { ISchedulerContextType, useScheduler } from "../../hooks/use-scheduler";
 import { CompiledCoursesData } from "../../types/data.types";
 import { ScheduleClassTimeType } from "../../types/schedule.types";
-import ScheduleBlock from "../ScheduleBlock.tsx/ScheduleBlock";
+import ScheduleBlock from "./ScheduleBlock";
 
 const scheduleBlockSettings = {
   startHour: 8,
   endHour: 24,
-  lineInterval: 1,
+  lineInterval: 2,
   labelInterval: 2,
   showLabels: true,
   doubleSidedColumnGap: 1,
 };
 
-export default function ScheduleGrid() {
+const ScheduleBoard = () => {
   const { generatedSchedule, scheduleGenerationOptions, courseColors } =
     useScheduler() as ISchedulerContextType;
 
   const StripSchedule = useCallback(
     (scheduleData: string[], data: CompiledCoursesData) => {
-      // if (data === null) {
-      //   return {};
-      // }
+      if (data === null) {
+        return {};
+      }
 
       const TimeRepresentedSchedules: ScheduleClassTimeType = {};
 
@@ -54,7 +55,7 @@ export default function ScheduleGrid() {
           )}
           settings={scheduleBlockSettings}
           colorTheme={courseColors}
-          className="h-44 w-64 border-2 border-slate-500 bg-gray-200 font-normal shadow-md hover:-top-1 hover:border-[3px] hover:border-pink-500 hover:drop-shadow-xl"
+          className="h-44 w-64 border-2 border-slate-500 bg-gray-50 font-normal shadow-md hover:-top-1 hover:border-[3px] hover:border-pink-500 hover:drop-shadow-xl"
         />
       );
     });
@@ -62,15 +63,19 @@ export default function ScheduleGrid() {
   }, [generatedSchedule, StripSchedule]);
 
   return (
-    <div
-      className="grid gap-4 p-4"
-      style={{
-        gridTemplateColumns: "repeat(auto-fill, minmax(16rem, 1fr))", // Fit as many columns as possible based on the block width
-        justifyItems: "start", // Align items to start within each column
-      }}
-    >
-      {/* This is where your generated schedules will be displayed */}
-      {ScheduleBlockCollection}
+    <div className="h-full flex-grow">
+      <div
+        className="grid gap-4 px-4 pb-4"
+        style={{
+          gridTemplateColumns: "repeat(auto-fill, minmax(15rem, 1fr))", // Fit as many columns as possible based on the block width
+          justifyItems: "start", // Align items to start within each column
+        }}
+      >
+        {ScheduleBlockCollection}
+      </div>
+      <PaginationButtons />
     </div>
   );
-}
+};
+
+export default ScheduleBoard;
