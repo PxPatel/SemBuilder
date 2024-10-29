@@ -5,7 +5,7 @@ import {
 import { LastPointDetails } from "../../types/schedule.types";
 
 //Defaults and constant values
-export const SEMESTER = "Fall_2024";
+export const SEMESTER = "Spring_2025";
 
 export const BoxPalettes = [
   "#978365",
