@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Day } from "../../types/data.types";
 import { ScheduleClassTimeType } from "../../types/schedule.types";
 
@@ -20,6 +20,19 @@ export default function ScheduleBlockV2({
   colorTheme: { [courseTitle: string]: string };
   className?: string;
 }) {
+  const [showHint, setShowHint] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    const timeout = setTimeout(() => setShowHint(true), 1000); // Show hint after 1 second
+    setHoverTimeout(timeout);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeout) clearTimeout(hoverTimeout);
+    setShowHint(false);
+  };
+
   const dayToColumn: Record<Day, number> = {
     M: 1,
     T: 2,
@@ -68,7 +81,31 @@ export default function ScheduleBlockV2({
   return (
     <div
       className={`${className || ""} border-box relative rounded-lg border-2 border-stone-700`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
+      {showHint && (
+        <div
+          className="absolute left-0 top-0 z-10 scale-95 transform rounded-md border border-gray-400 bg-white p-2 opacity-0 shadow-md transition duration-300 ease-in-out"
+          style={{
+            opacity: showHint ? 1 : 0,
+            transform: showHint ? "scale(1)" : "scale(0.95)",
+            transition:
+              "opacity 300ms ease-in-out, transform 300ms ease-in-out",
+          }}
+        >
+          <ul className="list-disc pl-4 text-sm text-gray-800">
+            {Object.keys(schedule)
+              .sort((a, b) => a.localeCompare(b, undefined, { numeric: true })) // Alphanumeric sorting
+              .map((sectionIdentity) => (
+                <li key={sectionIdentity}>
+                  <strong>{sectionIdentity}</strong>
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
+
       {Object.entries(schedule).map(
         ([sectionIdentity, { days, startTimes, endTimes }]) =>
           days.map((day, i) => {
