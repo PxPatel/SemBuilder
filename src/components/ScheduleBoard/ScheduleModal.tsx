@@ -71,7 +71,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 "h-full max-h-[600px] min-h-[200px] w-full min-w-[300px] max-w-full border-2 border-slate-500 bg-gray-50 font-normal shadow-md",
               labelStyle: "text-[12px]",
               eventBoxStyle: "rounded-lg",
-              eventBoxLabelStyle: "font-sans",
+              eventBoxLabelStyle: "font-roberto text-sm",
+              highlightBorderStyle: "border-2 border-orange-700 shadow-md", // Pass the highlight border style to ScheduleBlock
             }}
           />
         </div>
@@ -82,22 +83,27 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             Schedule Details
           </h2>
           <ul className="space-y-2 pl-4">
-            {Object.keys(schedule).map((sectionIdentity) => (
-              <li key={sectionIdentity} className="flex items-center space-x-2">
-                {/* Color Box */}
-                <div
-                  className="h-4 w-4 rounded"
-                  style={{
-                    backgroundColor:
-                      colorTheme[sectionIdentity.split("-")[0]] || "gray",
-                  }}
-                />
-                {/* Course-Section Name */}
-                <span className="font-medium text-gray-800">
-                  {sectionIdentity}
-                </span>
-              </li>
-            ))}
+            {Object.keys(schedule)
+              .sort() // Sorts the keys (section identities) in alphanumeric order
+              .map((sectionIdentity) => (
+                <li
+                  key={sectionIdentity}
+                  className="flex items-center space-x-2"
+                >
+                  {/* Color Box */}
+                  <div
+                    className="h-4 w-4 rounded border border-gray-400"
+                    style={{
+                      backgroundColor:
+                        colorTheme[sectionIdentity.split("-")[0]] || "gray",
+                    }}
+                  />
+                  {/* Course-Section Name */}
+                  <span className="font-medium text-gray-800">
+                    {sectionIdentity}
+                  </span>
+                </li>
+              ))}
           </ul>
         </div>
 

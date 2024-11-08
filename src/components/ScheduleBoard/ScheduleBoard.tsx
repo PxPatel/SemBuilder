@@ -74,7 +74,7 @@ const ScheduleBoard = () => {
           colorTheme={courseColors}
           propStyles={{
             parentStyle:
-              "h-44 w-64 border-2 border-slate-500 bg-gray-50 font-normal shadow-md hover:-top-1 hover:border-[3px] hover:border-pink-500 hover:drop-shadow-xl",
+              "h-44 w-64 border-2 border-slate-500 bg-gray-50 font-normal shadow-md hover:cursor-pointer hover:-top-1 hover:border-[3px] hover:border-pink-500 hover:drop-shadow-xl",
           }}
         />
       </div>
