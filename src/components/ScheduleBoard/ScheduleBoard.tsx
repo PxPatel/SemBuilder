@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { PaginationButtons } from "./PaginationButtons";
 import { ISchedulerContextType, useScheduler } from "../../hooks/use-scheduler";
 import { CompiledCoursesData } from "../../types/data.types";
 import { ScheduleClassTimeType } from "../../types/schedule.types";
 import ScheduleBlock from "./ScheduleBlock";
+import ScheduleModal from "./ScheduleModal";
 
 const scheduleBlockSettings = {
   startHour: 8,
@@ -17,6 +18,10 @@ const scheduleBlockSettings = {
 const ScheduleBoard = () => {
   const { generatedSchedule, scheduleGenerationOptions, courseColors } =
     useScheduler() as ISchedulerContextType;
+
+  const [selectedSchedule, setSelectedSchedule] =
+    useState<ScheduleClassTimeType | null>(null);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const StripSchedule = useCallback(
     (scheduleData: string[], data: CompiledCoursesData) => {
@@ -40,25 +45,40 @@ const ScheduleBoard = () => {
     [],
   );
 
-  const ScheduleBlockCollection = useMemo(() => {
-    if (generatedSchedule === null) {
-      return null;
-    }
+  const handleScheduleBlockClick = (schedule: ScheduleClassTimeType) => {
+    setSelectedSchedule(schedule);
+    setModalOpen(true);
+  };
 
-    return generatedSchedule.map((schedule, index) => {
-      return (
+  const ScheduleBlockCollection = useMemo(() => {
+    if (generatedSchedule === null) return null;
+
+    return generatedSchedule.map((schedule, index) => (
+      <div
+        key={index}
+        onClick={() =>
+          handleScheduleBlockClick(
+            StripSchedule(
+              schedule,
+              scheduleGenerationOptions.current.relevantCoursesData ?? {},
+            ),
+          )
+        }
+      >
         <ScheduleBlock
-          key={index}
           schedule={StripSchedule(
             schedule,
             scheduleGenerationOptions.current.relevantCoursesData ?? {},
           )}
           settings={scheduleBlockSettings}
           colorTheme={courseColors}
-          className="h-44 w-64 border-2 border-slate-500 bg-gray-50 font-normal shadow-md hover:-top-1 hover:border-[3px] hover:border-pink-500 hover:drop-shadow-xl"
+          propStyles={{
+            parentStyle:
+              "h-44 w-64 border-2 border-slate-500 bg-gray-50 font-normal shadow-md hover:-top-1 hover:border-[3px] hover:border-pink-500 hover:drop-shadow-xl",
+          }}
         />
-      );
-    });
+      </div>
+    ));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [generatedSchedule, StripSchedule]);
 
@@ -74,6 +94,14 @@ const ScheduleBoard = () => {
         {ScheduleBlockCollection}
       </div>
       <PaginationButtons />
+
+      {/* Schedule Modal */}
+      <ScheduleModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        schedule={selectedSchedule}
+        colorTheme={courseColors}
+      />
     </div>
   );
 };

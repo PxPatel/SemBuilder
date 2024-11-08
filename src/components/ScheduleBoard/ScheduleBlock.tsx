@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Day } from "../../types/data.types";
 import { ScheduleClassTimeType } from "../../types/schedule.types";
 
-export default function ScheduleBlockV2({
+export default function ScheduleBlock({
   schedule,
   settings,
-  className,
   colorTheme,
+  propStyles,
 }: {
   schedule: ScheduleClassTimeType;
   settings: {
@@ -16,9 +16,16 @@ export default function ScheduleBlockV2({
     labelInterval: number;
     showLabels: boolean;
     doubleSidedColumnGap: number;
+    showEventLabel?: boolean;
   };
   colorTheme: { [courseTitle: string]: string };
-  className?: string;
+  propStyles?: {
+    parentStyle?: string;
+    labelStyle?: string;
+    eventBoxStyle?: string;
+    eventBoxLabelStyle?: string;
+    highlightBorderStyle?: string | null;
+  };
 }) {
   const [showHint, setShowHint] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -43,15 +50,15 @@ export default function ScheduleBlockV2({
     X: -1,
   };
 
-  const dayLabels: Record<Day, string> = {
-    M: "Monday",
-    T: "Tuesday",
-    W: "Wednesday",
-    R: "Thursday",
-    F: "Friday",
-    S: "Saturday",
-    X: "",
-  };
+  // const dayLabels: Record<Day, string> = {
+  //   M: "Monday",
+  //   T: "Tuesday",
+  //   W: "Wednesday",
+  //   R: "Thursday",
+  //   F: "Friday",
+  //   S: "Saturday",
+  //   X: "",
+  // };
 
   const {
     startHour,
@@ -60,6 +67,7 @@ export default function ScheduleBlockV2({
     labelInterval,
     showLabels,
     doubleSidedColumnGap,
+    showEventLabel,
   } = settings;
 
   const startOfDay = startHour * 60 * 60 * 1000;
@@ -80,11 +88,11 @@ export default function ScheduleBlockV2({
 
   return (
     <div
-      className={`${className || ""} border-box relative rounded-lg border-2 border-stone-700`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      className={`border-box relative rounded-lg border-2 border-stone-700 ${propStyles?.parentStyle || ""}`}
+      // onMouseEnter={handleMouseEnter}
+      // onMouseLeave={handleMouseLeave}
     >
-      {showHint && (
+      {/* {showHint && (
         <div
           className="absolute left-0 top-0 z-10 scale-95 transform rounded-md border border-gray-400 bg-white p-2 opacity-0 shadow-md transition duration-300 ease-in-out"
           style={{
@@ -104,7 +112,7 @@ export default function ScheduleBlockV2({
               ))}
           </ul>
         </div>
-      )}
+      )} */}
 
       {Object.entries(schedule).map(
         ([sectionIdentity, { days, startTimes, endTimes }]) =>
@@ -121,7 +129,7 @@ export default function ScheduleBlockV2({
             return (
               <div
                 key={`${sectionIdentity}-${i}`}
-                className="absolute rounded border border-slate-900"
+                className={`absolute rounded border border-slate-900 ${propStyles?.eventBoxStyle || ""}`}
                 style={{
                   top: `${topPosition}%`,
                   left: `calc(${labelColumnWidth}% + ${leftPosition}% + ${marginLeft}%)`,
@@ -132,7 +140,16 @@ export default function ScheduleBlockV2({
                   zIndex: 1,
                 }}
               >
-                <div className="flex h-full items-center justify-center text-center text-white"></div>
+                <div
+                  className={`flex h-full items-center justify-center text-center text-black ${propStyles?.eventBoxLabelStyle || ""}`}
+                  style={
+                    {
+                      // color: eventLabelTextColor,
+                    }
+                  }
+                >
+                  {showEventLabel ? sectionIdentity.split("-")[0] : ""}
+                </div>
               </div>
             );
           }),
@@ -157,24 +174,27 @@ export default function ScheduleBlockV2({
       {/* Horizontal lines and time labels */}
       {hours.map((hour, i) => (
         <React.Fragment key={hour}>
-          <div
-            className="absolute"
-            style={{
-              top: `${i * (100 / hours.length)}%`,
-              left: 0,
-              right: 0,
-              borderTop: "1px solid gray",
-              zIndex: 0,
-            }}
-          />
+          {/* Only render horizontal line if not the top line */}
+          {i > 0 && (
+            <div
+              className="absolute"
+              style={{
+                top: `${i * (100 / hours.length)}%`,
+                left: 0,
+                right: 0,
+                borderTop: "1px solid gray",
+                zIndex: 0,
+              }}
+            />
+          )}
           {showLabels && hour % labelInterval === 0 && (
             <div
-              className="absolute left-0 text-[8px] text-black"
+              className={`absolute left-0 text-[8px] text-black ${propStyles?.labelStyle || ""}`}
               style={{
                 top: `${i * (100 / hours.length)}%`,
                 width: `${labelColumnWidth}%`,
                 paddingRight: "4px",
-                textAlign: "right",
+                textAlign: "center",
                 zIndex: 2,
               }}
             >
