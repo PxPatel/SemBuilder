@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ScheduleClassTimeType } from "../../types/schedule.types";
 import ScheduleBlock from "./ScheduleBlock"; // reuse ScheduleBlock for the expanded view
-import { getContrastColor } from "../../lib/hex/getContrastColor";
 
 interface ScheduleModalProps {
   isOpen: boolean;
