@@ -68,7 +68,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             propStyles={{
               parentStyle:
                 "h-full max-h-[600px] min-h-[200px] w-full min-w-[300px] max-w-full border-2 border-slate-500 bg-gray-50 font-normal shadow-md",
-              labelStyle: "text-[12px]",
+              labelStyle: "!text-[12px]",
               eventBoxStyle: "rounded-lg",
               eventBoxLabelStyle: "font-roberto text-sm",
               highlightBorderStyle: "border-2 border-orange-700 shadow-md", // Pass the highlight border style to ScheduleBlock
