@@ -5,6 +5,7 @@ import { Label } from "../shadcn-ui/label";
 import { Input } from "../shadcn-ui/input";
 import { ISchedulerContextType, useScheduler } from "../../hooks/use-scheduler";
 import { Day } from "../../types/data.types";
+import { SelectedSections } from "../../types/options.types";
 
 type TimeObjectType = {
   time: string;
@@ -14,7 +15,8 @@ type TimeObjectType = {
 
 const FilterMenu = () => {
   // const [selectedOption, setSelectedOption] = useState("Include");
-  const { updateGenerationOptions } = useScheduler() as ISchedulerContextType;
+  const { updateGenerationOptions, scheduleGenerationOptions } =
+    useScheduler() as ISchedulerContextType;
 
   // State to track selected days
   const [selectedDays, setSelectedDays] = useState<Day[]>([]);
@@ -55,6 +57,79 @@ const FilterMenu = () => {
       },
     });
   }, [beforeTime, afterTime, updateGenerationOptions]);
+
+  const [selectedFilterAction, setSelectedFilterAction] = useState<
+    "POSITIVE" | "NEGATIVE"
+  >("POSITIVE");
+  const [allowHonors, setAllowHonors] = useState<boolean>(true);
+  const [selectedSections, setSelectedSections] = useState<SelectedSections>(
+    {},
+  );
+
+  // Update generation options on changes
+  useEffect(() => {
+    updateGenerationOptions({
+      customOptions: {
+        filterAction: selectedFilterAction,
+        globallyAllowHonors: allowHonors,
+      },
+      sectionFilters: selectedSections,
+    });
+  }, [
+    selectedFilterAction,
+    allowHonors,
+    selectedSections,
+    updateGenerationOptions,
+  ]);
+
+  const { relevantCoursesData } = scheduleGenerationOptions.current || {};
+
+  // Remove courses from selectedSections if they no longer exist in relevantCoursesData
+  useEffect(() => {
+    if (!relevantCoursesData) return;
+
+    setSelectedSections((prev) => {
+      const updatedSections = { ...prev };
+
+      Object.keys(prev).forEach((courseTitle) => {
+        if (!relevantCoursesData[courseTitle]) {
+          delete updatedSections[courseTitle];
+        }
+      });
+
+      return updatedSections;
+    });
+  }, [relevantCoursesData]);
+
+  const handleSectionToggle = (
+    courseTitle: string,
+    section: string,
+    isChecked: boolean,
+  ) => {
+    setSelectedSections((prev) => {
+      const updatedSections = { ...prev };
+      if (isChecked) {
+        if (!updatedSections[courseTitle]) {
+          updatedSections[courseTitle] = [];
+        }
+        if (!updatedSections[courseTitle].includes(section)) {
+          updatedSections[courseTitle].push(section);
+        }
+      } else {
+        console.log(courseTitle, section);
+        console.log(updatedSections);
+        updatedSections[courseTitle] = updatedSections[courseTitle].filter(
+          (s) => s !== section,
+        );
+        // if (updatedSections[courseTitle].length === 0) {
+        //   delete updatedSections[courseTitle];
+        // }
+      }
+
+      console.log(updatedSections["CS288"] ?? []);
+      return updatedSections;
+    });
+  };
 
   return (
     <div className="min-w-1/5 h-full min-h-full w-[19rem]">
@@ -105,9 +180,59 @@ const FilterMenu = () => {
         </div>
       </div>
 
-      {/* <div className="mx-2 mt-5 flex min-h-fit h-fit flex-col items-center justify-start rounded-xl border border-stone-300 px-2 pt-4 pb-2 shadow-lg">
+      <div className="mx-2 mt-5 flex h-fit min-h-fit flex-col items-center justify-start rounded-xl border border-stone-300 px-2 pb-2 pt-4 shadow-lg">
         <h1 className="text-xl font-medium">Section Filters</h1>
-      </div> */}
+
+        {/* Ignore/Include Switch */}
+        <div className="flex w-full items-center justify-between px-4 py-2">
+          <Label>Include Sections</Label>
+          <Switch
+            checked={selectedFilterAction === "POSITIVE"}
+            onCheckedChange={(checked) =>
+              setSelectedFilterAction(checked ? "POSITIVE" : "NEGATIVE")
+            }
+          />
+        </div>
+
+        {/* Honor Sections Switch */}
+        <div className="flex w-full items-center justify-between px-4 py-2">
+          <Label>Allow Honor Sections</Label>
+          <Switch checked={allowHonors} onCheckedChange={setAllowHonors} />
+        </div>
+
+        {/* Section Selection */}
+        <div className="w-full px-4 py-2">
+          {Object.entries(
+            scheduleGenerationOptions.current.relevantCoursesData ?? {},
+          ).map(([courseTitle, sectionsData]) => (
+            <div key={courseTitle} className="mb-4">
+              <h2 className="mb-2 text-lg font-semibold">{courseTitle}</h2>
+              <div className="grid grid-cols-3 gap-2">
+                {Object.keys(sectionsData)
+                  .sort((a, b) =>
+                    a.localeCompare(b, undefined, { numeric: true }),
+                  ) // Sort alphanumerically
+                  .map((section) => (
+                    <div key={section} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`${courseTitle}-${section}`}
+                        checked={selectedSections[courseTitle]?.includes(
+                          section,
+                        )}
+                        onCheckedChange={(checked: boolean | "indeterminate") =>
+                          handleSectionToggle(courseTitle, section, !!checked)
+                        }
+                      />
+                      <Label htmlFor={`${courseTitle}-${section}`}>
+                        {section}
+                      </Label>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

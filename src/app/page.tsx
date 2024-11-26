@@ -11,7 +11,7 @@ export default function Home() {
         <TopBar />
       </div>
 
-      <div className="flex flex-grow flex-row">
+      <div className="flex flex-grow flex-row mb-4">
         <FilterMenu />
         <ScheduleBoard />
       </div>

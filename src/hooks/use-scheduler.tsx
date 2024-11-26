@@ -93,11 +93,13 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
   const getSectionsData = useCallback(
     async (selectedCourses: string[]) => {
       console.log("[Data Fetch Starting]");
+
       if (selectedCourses.length > 0) {
         // Convert knownCourses to a Set for O(1) lookups
         const knownCoursesSet = new Set(
           Object.keys(SGO.current.relevantCoursesData ?? {}),
         );
+
         console.log("knownCoursesSet", knownCoursesSet);
 
         // Filter out the courses that we don't already have data for
@@ -114,6 +116,7 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
         const selectedCoursesSet = new Set(selectedCourses);
 
         console.log("selectedCoursesSet", selectedCoursesSet);
+
         Object.keys(SGO.current.relevantCoursesData ?? {}).forEach(
           (section) => {
             if (!selectedCoursesSet.has(section)) {
@@ -124,22 +127,34 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
 
         console.log("updatedSectionsData", Object.keys(updatedSectionsData));
 
+        // Adjust sectionFilters to only include courses in the updated dataset
+        // To circumvent error thrown in FilterByNumber
+        const filteredSectionFilters = Object.keys(
+          SGO.current.sectionFilters ?? {},
+        ).reduce(
+          (acc, courseTitle) => {
+            if (updatedSectionsData[courseTitle]) {
+              acc[courseTitle] =
+                SGO.current.sectionFilters?.[courseTitle] ?? [];
+            }
+            return acc;
+          },
+          {} as Record<string, string[]>,
+        );
+
         try {
           const collectedSectionsData = await collectSectionsData(
             newCoursesToFetch,
             SEMESTER,
           );
 
-          // setSectionsData({
-          //   ...updatedSectionsData,
-          //   ...collectedSectionsData,
-          // });
           setNewColorMap(selectedCourses);
           updateGenerationOptions({
             relevantCoursesData: {
               ...updatedSectionsData,
               ...collectedSectionsData,
             },
+            sectionFilters: filteredSectionFilters,
           });
         } catch (error) {
           console.error(error);
@@ -150,9 +165,10 @@ export function SchedulerProvider({ children }: { children: ReactNode }) {
         }
       } else {
         console.log("No selected courses");
-        // setSectionsData({});
+
         updateGenerationOptions({
           relevantCoursesData: {},
+          sectionFilters: {},
         });
       }
 
