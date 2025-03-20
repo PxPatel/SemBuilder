@@ -184,8 +184,24 @@ const FilterMenu = () => {
         <h1 className="text-xl font-medium">Section Filters</h1>
 
         {/* Ignore/Include Switch */}
-        <div className="flex w-full items-center justify-between px-4 py-2">
-          <Label>Only Include Selected Sections</Label>
+        <div className="flex w-full items-center justify-between px-4 py-3">
+          <div className="flex items-center space-x-2">
+            {/* Info Icon with Tooltip */}
+            <div className="group relative pr-1">
+              <span className="cursor-pointer text-gray-500 hover:text-gray-700">
+                ℹ
+              </span>
+              <div className="absolute left-0 top-6 hidden w-64 rounded-md bg-gray-800 p-2 text-sm text-white shadow-md group-hover:block">
+                When ON, only the selected sections will be included in the
+                schedule. When OFF, the selected sections will be excluded from
+                the schedule. If NO SECTIONS are selected, then all sections
+                will be considered.
+              </div>
+            </div>
+
+            <Label>Exclude/Include Sections</Label>
+          </div>
+
           <Switch
             checked={selectedFilterAction === "POSITIVE"}
             onCheckedChange={(checked) =>
@@ -195,13 +211,25 @@ const FilterMenu = () => {
         </div>
 
         {/* Honor Sections Switch */}
-        <div className="flex w-full items-center justify-between px-4 py-2">
-          <Label>Allow Honor Sections</Label>
+        <div className="flex w-full items-center justify-between px-4 py-3">
+          <div className="flex items-center space-x-2">
+            {/* Info Icon with Tooltip */}
+            <div className="group relative pr-1">
+              <span className="cursor-pointer text-gray-500 hover:text-gray-700">
+                ℹ
+              </span>
+              <div className="absolute left-0 top-6 hidden w-64 rounded-md bg-gray-800 p-2 text-sm text-white shadow-md group-hover:block">
+                Can globally exclude all Honors sections from being considered.
+              </div>
+            </div>
+
+            <Label>Allow Honors Sections </Label>
+          </div>
           <Switch checked={allowHonors} onCheckedChange={setAllowHonors} />
         </div>
 
         {/* Section Selection */}
-        <div className="w-full px-4 py-2">
+        <div className="w-full px-4 py-3">
           {Object.entries(
             scheduleGenerationOptions.current.relevantCoursesData ?? {},
           ).map(([courseTitle, sectionsData]) => (
