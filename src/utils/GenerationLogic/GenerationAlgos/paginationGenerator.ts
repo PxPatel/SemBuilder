@@ -326,6 +326,20 @@ function doesScheduleHaveConflict(
       continue;
     }
 
+    const startTimeInQ =
+      sectionDataInQ.start_times[sectionDataInQ.days.indexOf(day)];
+
+    const endTimeInQ =
+      sectionDataInQ.end_times[sectionDataInQ.days.indexOf(day)];
+
+    if (startTimeInQ === null || endTimeInQ === null) {
+      if (allowIncompleteSections) {
+        continue;
+      } else {
+        return true;
+      }
+    }
+
     //Iterate through the section_ids of the sections
     //currently in currSchedule for a particular day
     for (const section_id of currentSchedule[day]) {
@@ -343,17 +357,9 @@ function doesScheduleHaveConflict(
       const endTimeOfOne =
         data[courseName][sectionNumber].end_times[matchIndex];
 
-      const startTimeInQ =
-        sectionDataInQ.start_times[sectionDataInQ.days.indexOf(day)];
-
-      const endTimeInQ =
-        sectionDataInQ.end_times[sectionDataInQ.days.indexOf(day)];
-
-      // const foo = data[courseName][sectionNumber]
-
       if (
-        startTimeInQ === null ||
-        endTimeInQ === null ||
+        // startTimeInQ === null ||
+        // endTimeInQ === null ||
         startTimeOfOne === null ||
         endTimeOfOne === null
       ) {

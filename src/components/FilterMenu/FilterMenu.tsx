@@ -185,7 +185,7 @@ const FilterMenu = () => {
 
         {/* Ignore/Include Switch */}
         <div className="flex w-full items-center justify-between px-4 py-2">
-          <Label>Include Sections</Label>
+          <Label>Only Include Selected Sections</Label>
           <Switch
             checked={selectedFilterAction === "POSITIVE"}
             onCheckedChange={(checked) =>
@@ -201,7 +201,7 @@ const FilterMenu = () => {
         </div>
 
         {/* Section Selection */}
-        <div className="sm:max-h-64 w-full px-4 py-2">
+        <div className="w-full px-4 py-2">
           {Object.entries(
             scheduleGenerationOptions.current.relevantCoursesData ?? {},
           ).map(([courseTitle, sectionsData]) => (
