@@ -201,7 +201,7 @@ const FilterMenu = () => {
         </div>
 
         {/* Section Selection */}
-        <div className="w-full px-4 py-2">
+        <div className="sm:max-h-64 w-full px-4 py-2">
           {Object.entries(
             scheduleGenerationOptions.current.relevantCoursesData ?? {},
           ).map(([courseTitle, sectionsData]) => (
