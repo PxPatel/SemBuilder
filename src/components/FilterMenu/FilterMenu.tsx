@@ -211,7 +211,7 @@ const FilterMenu = () => {
         </div>
 
         {/* Honor Sections Switch */}
-        <div className="flex w-full items-center justify-between px-4 py-3">
+        <div className="flex w-full items-center justify-between px-4 py-2">
           <div className="flex items-center space-x-2">
             {/* Info Icon with Tooltip */}
             <div className="group relative pr-1">
