@@ -25,6 +25,7 @@ export default function RootLayout({
           <SchedulerProvider>{children}</SchedulerProvider>
         </ErrorUIProvider>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
