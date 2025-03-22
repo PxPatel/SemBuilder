@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "../components/shadcn-ui/toaster";
 import { ErrorUIProvider } from "../hooks/use-error-ui";
 import { SchedulerProvider } from "../hooks/use-scheduler";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
